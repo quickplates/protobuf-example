@@ -1,0 +1,120 @@
+---
+version: "3"
+
+tasks:
+  fmt:
+    desc: Format files
+    cmds:
+      - >
+        trunk
+        fmt
+        {{.CLI_ARGS}}
+  lint:
+    desc: Lint files
+    cmds:
+      - >
+        trunk
+        check
+        {{.CLI_ARGS}}
+  trunk:
+    desc: Run trunk
+    cmds:
+      - >
+        trunk
+        {{.CLI_ARGS}}
+  fetch-template:
+    desc: Fetch template updates
+    interactive: true
+    env:
+      GIT_CONFIG_COUNT: 1
+      GIT_CONFIG_KEY_0: commit.gpgsign
+      GIT_CONFIG_VALUE_0: false
+    cmds:
+      - >
+        copier
+        --answers-file
+        .copier-answers.yaml
+        {{.CLI_ARGS}}
+        update
+  copier:
+    desc: Run copier
+    env:
+      GIT_CONFIG_COUNT: 1
+      GIT_CONFIG_KEY_0: commit.gpgsign
+      GIT_CONFIG_VALUE_0: false
+    cmds:
+      - >
+        copier
+        {{.CLI_ARGS}}
+  install-docs:
+    desc: Install docs dependencies
+    dir: docs
+    cmds:
+      - >
+        npm
+        install
+        --prefer-offline
+        --no-audit
+        --no-fund
+        --quiet
+        --no-progress
+        {{.CLI_ARGS}}
+  docs:
+    desc: Run docusaurus
+    dir: docs
+    interactive: true
+    deps:
+      - install-docs
+    cmds:
+      - >
+        npm
+        run
+        docs
+        --
+        {{.CLI_ARGS}}
+  test-docs:
+    desc: Test docs
+    dir: docs
+    deps:
+      - install-docs
+    cmds:
+      - >
+        npm
+        run
+        test
+        --
+        {{.CLI_ARGS}}
+  update-docs-deps:
+    desc: Update docs dependencies
+    dir: docs
+    deps:
+      - install-docs
+    cmds:
+      - >
+        npm
+        run
+        update
+        --
+        {{.CLI_ARGS}}
+  update-flake-lock:
+    desc: Update flake.lock
+    cmds:
+      - >
+        nix
+        --extra-experimental-features 'nix-command flakes'
+        flake
+        update
+        {{.CLI_ARGS}}
+  build:
+    desc: Generate outputs
+    cmds:
+      - >
+        buf
+        generate
+        {{.CLI_ARGS}}
+  buf:
+    desc: Run buf
+    cmds:
+      - >
+        buf
+        {{.CLI_ARGS}}
