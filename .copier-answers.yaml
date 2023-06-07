@@ -1,0 +1,10 @@
+---
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: a6b4485
+_src_path: ./
+description: Protocol Buffers API example 📜
+docs: true
+docs_url: https://quickplates.github.io/protobuf-example
+project_name: protobuf-example
+repository: https://github.com/quickplates/protobuf-example
+username: quickplates

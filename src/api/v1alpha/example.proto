@@ -1,0 +1,28 @@
+/**
+ * Definitions for the Example Service.
+ */
+syntax = "proto3";
+
+package api.v1alpha;
+
+/**
+ * Request for GetData.
+ */
+message GetDataRequest {
+  uint64 quantity = 1; // The number of messages to return.
+}
+
+/**
+ * Response from GetData.
+ */
+message GetDataResponse {
+  string message = 1; // The message content.
+}
+
+/**
+ * Example service.
+ */
+service ExampleService {
+  // Returns a stream of messages.
+  rpc GetData(GetDataRequest) returns (stream GetDataResponse) {}
+}
