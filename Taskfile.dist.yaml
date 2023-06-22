@@ -1,0 +1,119 @@
+---
+version: "3"
+
+tasks:
+  fetch-template:
+    desc: Fetch template updates
+    interactive: true
+    env:
+      GIT_CONFIG_COUNT: 1
+      GIT_CONFIG_KEY_0: commit.gpgsign
+      GIT_CONFIG_VALUE_0: false
+    cmds:
+      - >
+        copier
+        update
+        --answers-file
+        .copier-answers.yaml
+        {{ .CLI_ARGS }}
+  update-flake-lock:
+    desc: Update flake.lock
+    cmds:
+      - >
+        nix
+        --accept-flake-config
+        --extra-experimental-features 'nix-command flakes'
+        --no-warn-dirty
+        flake
+        update
+        {{ .CLI_ARGS }}
+  fmt:
+    desc: Format files
+    cmds:
+      - >
+        trunk
+        fmt
+        {{ .CLI_ARGS }}
+  lint:
+    desc: Lint files
+    cmds:
+      - >
+        trunk
+        check
+        {{ .CLI_ARGS }}
+  install-docs:
+    desc: Install docs dependencies
+    dir: docs
+    cmds:
+      - >
+        npm
+        install
+        --prefer-offline
+        --no-audit
+        --no-fund
+        --quiet
+        --no-progress
+        {{ .CLI_ARGS }}
+  docs:
+    desc: Run docusaurus
+    dir: docs
+    interactive: true
+    deps:
+      - task: install-docs
+        vars:
+          CLI_ARGS: ""
+    cmds:
+      - >
+        npm
+        run
+        docs
+        --
+        {{ .CLI_ARGS }}
+  test-docs:
+    desc: Test docs
+    dir: docs
+    deps:
+      - task: install-docs
+        vars:
+          CLI_ARGS: ""
+    cmds:
+      - >
+        npm
+        run
+        test
+        --
+        {{ .CLI_ARGS }}
+  update-docs-deps:
+    desc: Update docs dependencies
+    dir: docs
+    deps:
+      - task: install-docs
+        vars:
+          CLI_ARGS: ""
+    cmds:
+      - >
+        npm
+        run
+        update
+        --
+        {{ .CLI_ARGS }}
+  clean:
+    desc: Clean outputs
+    cmds:
+      - >
+        rm
+        --recursive
+        --force
+        {{ .CLI_ARGS }}
+        ./build/
+  build:
+    desc: Generate outputs
+    deps:
+      - task: clean
+        vars:
+          CLI_ARGS: ""
+    cmds:
+      - >
+        buf
+        generate
+        {{ .CLI_ARGS }}
