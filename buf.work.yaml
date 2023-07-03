@@ -1,0 +1,6 @@
+---
+version: v1
+
+# Look for modules in the src directory
+directories:
+  - src
