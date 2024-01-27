@@ -1,0 +1,15 @@
+version: v1
+
+managed:
+  # Enable managed mode to set options in proto files on the fly
+  enabled: true
+
+plugins:
+  # Generate TypeScript client/server communication code
+  - plugin: buf.build/connectrpc/es:v1.3.0
+    out: build/ts/
+    opt: target=ts
+  # Generate TypeScript types
+  - plugin: buf.build/bufbuild/es:v1.7.0
+    out: build/ts/
+    opt: target=ts
