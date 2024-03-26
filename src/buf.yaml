@@ -1,0 +1,14 @@
+version: v1
+
+lint:
+  use:
+    # Use default lint rules
+    - DEFAULT
+
+breaking:
+  use:
+    # Use breaking change detections for FILE category
+    - FILE
+
+  # Don't fail on breaking changes with unstable API versions
+  ignore_unstable_packages: true
